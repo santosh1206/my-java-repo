@@ -1,91 +1,235 @@
-<form id="leadForm">
-  <!-- Hidden Subject for FormSubmit -->
-  <input type="hidden" id="formSubject" value="New Azure Training / Consulting Inquiry - Santosh Sahoo" />
-
-  <div class="form-group">
-    <label for="name">Full Name *</label>
-    <input type="text" id="name" name="name" placeholder="John Doe" required />
-  </div>
-
-  <div class="form-group">
-    <label for="email">Email Address *</label>
-    <input type="email" id="email" name="email" placeholder="john@example.com" required />
-  </div>
-
-  <div class="form-group">
-    <label for="phone">Phone / WhatsApp</label>
-    <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" />
-  </div>
-
-  <div class="form-group">
-    <label for="focus">Primary Focus Area</label>
-    <select id="focus" name="focus">
-      <option value="complete-track">Full Track: Azure Platform + Terraform + CI/CD</option>
-      <option value="terraform-iac">Terraform & Enterprise IaC</option>
-      <option value="cicd-devops">Azure DevOps & GitHub Pipelines</option>
-      <option value="corporate-consulting">Corporate Training / Consulting</option>
-    </select>
-  </div>
-
-  <div class="form-group">
-    <label for="experience">Current Role & Objective</label>
-    <textarea id="experience" name="experience" rows="3" placeholder="Current experience, tools used, and target learning goals..."></textarea>
-  </div>
-
-  <button type="submit" id="submitBtn">Submit Registration</button>
-  <div id="formStatus" style="margin-top: 12px; font-size: 0.9rem; display: none;"></div>
-</form>
-
-<script>
-  const leadForm = document.getElementById('leadForm');
-  const submitBtn = document.getElementById('submitBtn');
-  const statusDiv = document.getElementById('formStatus');
-
-  leadForm.addEventListener('submit', async function (e) {
-    e.preventDefault();
-
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Submitting...';
-    statusDiv.style.display = 'none';
-
-    const payload = {
-      name: document.getElementById('name').value,
-      email: document.getElementById('email').value,
-      phone: document.getElementById('phone').value,
-      focus: document.getElementById('focus').value,
-      experience: document.getElementById('experience').value,
-      _subject: document.getElementById('formSubject').value,
-      _captcha: 'false',
-      _template: 'table'
-    };
-
-    try {
-      const response = await fetch('https://formsubmit.co/ajax/nitsantosh@yahoo.com', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const result = await response.json();
-
-      if (response.ok && result.success === "true") {
-        statusDiv.style.color = '#15803d';
-        statusDiv.textContent = 'Thank you! Your registration has been received. I will reach out shortly.';
-        statusDiv.style.display = 'block';
-        leadForm.reset();
-      } else {
-        throw new Error(result.message || 'Submission failed');
-      }
-    } catch (error) {
-      statusDiv.style.color = '#b91c1c';
-      statusDiv.textContent = 'Something went wrong. Please check your network or try again.';
-      statusDiv.style.display = 'block';
-    } finally {
-      submitBtn.disabled = false;
-      submitBtn.textContent = 'Submit Registration';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Azure Platform Engineering & DevOps Masterclass | Santosh Sahoo</title>
+  <style>
+    :root {
+      --primary: #0078d4;
+      --primary-dark: #005a9e;
+      --bg-dark: #0f172a;
+      --text-main: #334155;
+      --text-light: #64748b;
+      --surface: #ffffff;
+      --surface-alt: #f8fafc;
+      --border: #e2e8f0;
+      --radius: 8px;
     }
-  });
-</script>
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: var(--text-main); line-height: 1.6; background-color: var(--surface-alt); }
+
+    .container { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header { background: var(--bg-dark); color: #ffffff; padding: 60px 0 50px; border-bottom: 3px solid var(--primary); }
+    .hero-badge { display: inline-block; background: rgba(0, 120, 212, 0.2); color: #60a5fa; padding: 4px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px; }
+    h1 { font-size: 2.4rem; font-weight: 700; line-height: 1.2; margin-bottom: 12px; color: #ffffff; }
+    .hero-subtitle { font-size: 1.15rem; color: #cbd5e1; max-width: 720px; margin-bottom: 24px; }
+    .instructor-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.95rem; color: #94a3b8; }
+    .instructor-meta strong { color: #ffffff; }
+
+    /* Main Layout */
+    main { padding: 40px 0 60px; }
+    .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 36px; }
+
+    @media (max-width: 850px) {
+      .content-grid { grid-template-columns: 1fr; }
+    }
+
+    /* Cards */
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 28px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 24px; }
+    .card h2 { font-size: 1.3rem; margin-bottom: 16px; color: #0f172a; border-bottom: 2px solid var(--surface-alt); padding-bottom: 8px; }
+
+    /* Modules */
+    .module-list { list-style: none; }
+    .module-item { margin-bottom: 16px; padding-left: 20px; position: relative; }
+    .module-item::before { content: "•"; color: var(--primary); font-size: 1.5rem; position: absolute; left: 0; top: -4px; }
+    .module-item strong { display: block; color: #0f172a; font-size: 1rem; }
+    .module-item span { font-size: 0.9rem; color: var(--text-light); }
+
+    /* Form Styles */
+    .form-group { margin-bottom: 16px; }
+    label { display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; color: #1e293b; }
+    input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; font-family: inherit; color: var(--text-main); background: #ffffff; }
+    input:focus, select:focus, textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.15); }
+    button[type="submit"] { width: 100%; background: var(--primary); color: #ffffff; border: none; padding: 12px 20px; border-radius: 6px; font-size: 1rem; font-weight: 600; cursor: pointer; transition: background 0.2s ease; }
+    button[type="submit"]:hover { background: var(--primary-dark); }
+    button[type="submit"]:disabled { background: #94a3b8; cursor: not-allowed; }
+
+    #formStatus { margin-top: 14px; padding: 10px; border-radius: 6px; font-size: 0.9rem; display: none; }
+    .status-success { background-color: #f0fdf4; color: #15803d; border: 1px solid #bbf7d0; }
+    .status-error { background-color: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+    /* Footer */
+    footer { text-align: center; padding: 30px 0; font-size: 0.85rem; color: var(--text-light); border-top: 1px solid var(--border); }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <span class="hero-badge">Enterprise Training & Consulting</span>
+      <h1>Azure Platform Engineering & CI/CD Masterclass</h1>
+      <p class="hero-subtitle">Industry-ready infrastructure automation, governance, and delivery pipelines designed and mentored by an enterprise architect.</p>
+      <div class="instructor-meta">
+        <div><strong>Mentor:</strong> Santosh Sahoo</div>
+        <div><strong>Role:</strong> Azure Platform Architect & Consultant</div>
+        <div><strong>Experience:</strong> 17+ Years in Enterprise IT & Cloud</div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container">
+      <div class="content-grid">
+
+        <!-- Left Column: Syllabus & Details -->
+        <div>
+          <div class="card">
+            <h2>Core Curriculum Breakdown</h2>
+            <ul class="module-list">
+              <li class="module-item">
+                <strong>Azure Platform Engineering & Landing Zones</strong>
+                <span>Subscription architecture, Management Groups, Hub-Spoke virtual networks, Azure Policy, RBAC, and zero-trust foundations.</span>
+              </li>
+              <li class="module-item">
+                <strong>Infrastructure as Code (IaC) with Terraform</strong>
+                <span>Module design, remote state management, dynamic blocks, multi-environment provisioning, and modular architectural patterns.</span>
+              </li>
+              <li class="module-item">
+                <strong>Pipeline Automation (Azure DevOps & GitHub Actions)</strong>
+                <span>Automated PR validations, build and release pipelines, artifact versioning, and environment-scoped deployment gates.</span>
+              </li>
+              <li class="module-item">
+                <strong>Terraform Cloud Integration & Enterprise Governance</strong>
+                <span>Workspaces, state locking, Sentinel policies, run triggers, and drift detection.</span>
+              </li>
+              <li class="module-item">
+                <strong>Real-World Capstone Project</strong>
+                <span>Design, deploy, and automate an end-to-end multi-tier infrastructure solution following enterprise standards.</span>
+              </li>
+            </ul>
+          </div>
+
+          <div class="card">
+            <h2>Who Should Attend</h2>
+            <p style="font-size: 0.95rem; color: var(--text-light);">
+              Designed for Cloud Engineers, DevOps Practitioners, System Admins, and aspiring Platform Architects who want to build production-grade, enterprise-scale Azure infrastructure.
+            </p>
+          </div>
+        </div>
+
+        <!-- Right Column: Lead Form -->
+        <div>
+          <div class="card">
+            <h2>Express Interest / Enroll</h2>
+            <p style="font-size: 0.88rem; color: var(--text-light); margin-bottom: 20px;">
+              Submit your details to discuss upcoming batches, tailored consulting, or custom syllabus tracks.
+            </p>
+
+            <form id="leadForm">
+              <div class="form-group">
+                <label for="name">Full Name *</label>
+                <input type="text" id="name" name="name" placeholder="John Doe" required />
+              </div>
+
+              <div class="form-group">
+                <label for="email">Email Address *</label>
+                <input type="email" id="email" name="email" placeholder="john@example.com" required />
+              </div>
+
+              <div class="form-group">
+                <label for="phone">Phone / WhatsApp</label>
+                <input type="tel" id="phone" name="phone" placeholder="+91 98765 43210" />
+              </div>
+
+              <div class="form-group">
+                <label for="focus">Primary Focus Area</label>
+                <select id="focus" name="focus">
+                  <option value="Full Track: Azure Platform + Terraform + CI/CD">Full Track: Azure Platform + Terraform + CI/CD</option>
+                  <option value="Terraform & Enterprise IaC">Terraform & Enterprise IaC</option>
+                  <option value="Azure DevOps & GitHub Pipelines">Azure DevOps & GitHub Pipelines</option>
+                  <option value="Corporate Training / Consulting">Corporate Training / Consulting</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="experience">Current Role & Objective</label>
+                <textarea id="experience" name="experience" rows="3" placeholder="Current experience, tools used, and target learning goals..."></textarea>
+              </div>
+
+              <button type="submit" id="submitBtn">Submit Registration</button>
+              <div id="formStatus"></div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <div class="container">
+      &copy; Santosh Sahoo. Azure Platform Architecture & Technical Mentorship.
+    </div>
+  </footer>
+
+  <script>
+    const leadForm = document.getElementById('leadForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const statusDiv = document.getElementById('formStatus');
+
+    leadForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Submitting...';
+      statusDiv.style.display = 'none';
+      statusDiv.className = '';
+
+      const payload = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        phone: document.getElementById('phone').value,
+        focus: document.getElementById('focus').value,
+        experience: document.getElementById('experience').value,
+        _subject: 'New Azure Training / Consulting Inquiry - Santosh Sahoo',
+        _captcha: 'false',
+        _template: 'table'
+      };
+
+      try {
+        const response = await fetch('https://formsubmit.co/ajax/nitsantosh@yahoo.com', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success === "true") {
+          statusDiv.className = 'status-success';
+          statusDiv.textContent = 'Thank you! Your registration has been received. I will reach out shortly.';
+          statusDiv.style.display = 'block';
+          leadForm.reset();
+        } else {
+          throw new Error(result.message || 'Submission failed');
+        }
+      } catch (error) {
+        statusDiv.className = 'status-error';
+        statusDiv.textContent = 'Submission error. Please ensure form activation is complete or try again.';
+        statusDiv.style.display = 'block';
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Registration';
+      }
+    });
+  </script>
+
+</body>
+</html>
