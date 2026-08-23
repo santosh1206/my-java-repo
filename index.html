@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Activate FormSubmit Endpoint</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #f1f5f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .card {
+      background: #ffffff;
+      max-width: 480px;
+      width: 100%;
+      padding: 32px;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      text-align: center;
+    }
+    h2 {
+      color: #0f172a;
+      margin-bottom: 12px;
+      font-size: 1.4rem;
+    }
+    p {
+      color: #64748b;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      margin-bottom: 24px;
+    }
+    .email-badge {
+      display: inline-block;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+    button {
+      background-color: #0078d4;
+      color: #ffffff;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.2s ease;
+    }
+    button:hover {
+      background-color: #005a9e;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Form Endpoint Activation</h2>
+    <div class="email-badge">nitsantosh@yahoo.com</div>
+    <p>Click the button below to trigger the official one-time activation confirmation email from FormSubmit to your Yahoo inbox.</p>
+
+    <!-- Native POST form directly to the FormSubmit endpoint -->
+    <form action="https://formsubmit.co/nitsantosh@yahoo.com" method="POST">
+      <input type="hidden" name="_subject" value="Initial Form Activation" />
+      <input type="hidden" name="_captcha" value="false" />
+      <input type="hidden" name="message" value="Triggering one-time endpoint activation." />
+      <button type="submit">Send Activation Email</button>
+    </form>
+  </div>
+
+</body>
+</html>
