@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="always" />
   <title>Activate FormSubmit Endpoint</title>
   <style>
     body {
@@ -22,20 +23,11 @@
       width: 100%;
       padding: 32px;
       border-radius: 8px;
-      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
       text-align: center;
     }
-    h2 {
-      color: #0f172a;
-      margin-bottom: 12px;
-      font-size: 1.4rem;
-    }
-    p {
-      color: #64748b;
-      font-size: 0.95rem;
-      line-height: 1.5;
-      margin-bottom: 24px;
-    }
+    h2 { color: #0f172a; margin-bottom: 12px; font-size: 1.4rem; }
+    p { color: #64748b; font-size: 0.95rem; line-height: 1.5; margin-bottom: 20px; }
     .email-badge {
       display: inline-block;
       background: #e0f2fe;
@@ -55,11 +47,10 @@
       border-radius: 6px;
       cursor: pointer;
       width: 100%;
-      transition: background-color 0.2s ease;
+      margin-top: 10px;
     }
-    button:hover {
-      background-color: #005a9e;
-    }
+    button:hover { background-color: #005a9e; }
+    #status { margin-top: 15px; font-size: 0.9rem; font-weight: 500; display: none; }
   </style>
 </head>
 <body>
@@ -67,16 +58,59 @@
   <div class="card">
     <h2>Form Endpoint Activation</h2>
     <div class="email-badge">nitsantosh@yahoo.com</div>
-    <p>Click the button below to trigger the official one-time activation confirmation email from FormSubmit to your Yahoo inbox.</p>
+    <p>Click the button below to send the activation email.</p>
 
-    <!-- Native POST form directly to the FormSubmit endpoint -->
-    <form action="https://formsubmit.co/nitsantosh@yahoo.com" method="POST">
-      <input type="hidden" name="_subject" value="Initial Form Activation" />
-      <input type="hidden" name="_captcha" value="false" />
-      <input type="hidden" name="message" value="Triggering one-time endpoint activation." />
-      <button type="submit">Send Activation Email</button>
+    <!-- Native form with explicit referrer policy -->
+    <form id="activateForm" action="https://formsubmit.co/nitsantosh@yahoo.com" method="POST" referrerpolicy="no-referrer-when-downgrade">
+      <input type="hidden" name="Activation_Trigger" value="Santosh Sahoo Azure Training" />
+      <button type="submit" id="btn">Send Activation Email</button>
     </form>
+
+    <div id="status"></div>
   </div>
+
+  <script>
+    const form = document.getElementById('activateForm');
+    const btn = document.getElementById('btn');
+    const status = document.getElementById('status');
+
+    form.addEventListener('submit', async function(e) {
+      // Use AJAX with full CORS headers as the primary handler
+      e.preventDefault();
+      btn.disabled = true;
+      btn.textContent = 'Triggering...';
+
+      try {
+        const res = await fetch('https://formsubmit.co/ajax/nitsantosh@yahoo.com', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            message: 'One-time activation request from Azure Static Web App.'
+          })
+        });
+
+        const data = await res.json();
+        
+        status.style.display = 'block';
+        if (data.success === 'true' || res.ok) {
+          status.style.color = '#15803d';
+          status.textContent = 'Activation email sent! Please check your Yahoo inbox and Spam folder.';
+        } else {
+          status.style.color = '#b91c1c';
+          status.textContent = data.message || 'Check your inbox for activation confirmation.';
+        }
+      } catch (err) {
+        // Fallback: Submit form naturally if fetch gets blocked
+        form.submit();
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Send Activation Email';
+      }
+    });
+  </script>
 
 </body>
 </html>
