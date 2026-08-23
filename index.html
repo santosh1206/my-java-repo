@@ -30,7 +30,7 @@
     .instructor-meta { display: flex; flex-wrap: wrap; gap: 20px; font-size: 0.95rem; color: #94a3b8; }
     .instructor-meta strong { color: #ffffff; }
 
-    /* Main Layout */
+    /* Main Grid */
     main { padding: 40px 0 60px; }
     .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 36px; }
 
@@ -49,7 +49,7 @@
     .module-item strong { display: block; color: #0f172a; font-size: 1rem; }
     .module-item span { font-size: 0.9rem; color: var(--text-light); }
 
-    /* Form Styles */
+    /* Form */
     .form-group { margin-bottom: 16px; }
     label { display: block; font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; color: #1e293b; }
     input, select, textarea { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px; font-size: 0.95rem; font-family: inherit; color: var(--text-main); background: #ffffff; }
@@ -195,7 +195,7 @@
         phone: document.getElementById('phone').value,
         focus: document.getElementById('focus').value,
         experience: document.getElementById('experience').value,
-        _subject: 'New Azure Training / Consulting Inquiry - Santosh Sahoo',
+        _subject: 'New Azure Training Inquiry - Santosh Sahoo',
         _captcha: 'false',
         _template: 'table'
       };
@@ -222,7 +222,7 @@
         }
       } catch (error) {
         statusDiv.className = 'status-error';
-        statusDiv.textContent = 'Submission error. Please ensure form activation is complete or try again.';
+        statusDiv.textContent = 'Something went wrong. Please check your connection and try again.';
         statusDiv.style.display = 'block';
       } finally {
         submitBtn.disabled = false;
